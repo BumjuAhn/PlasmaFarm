@@ -1,0 +1,5 @@
+tuya-connector-python
+python-dotenv
+tuya-iot-py-sdk
+pycryptodomex
+influxdb-client
