@@ -29,36 +29,44 @@ bucket = os.getenv("INFLUXDB_BUCKET")
 client = InfluxDBClient(url=influx_url, token=token, org=org)
 write_api = client.write_api(write_options=SYNCHRONOUS)
 
+# 마지막 실행 시간 초기화
+last_time = time.time()
+
 try:
     while True:
-        # Tuya에서 데이터 가져오기
-        data = openapi.get("/v2.0/cloud/thing/{}/shadow/properties".format(DEVICE_ID_ONLINE_8IN1_TESTER))
+        # 현재 시간 가져오기
+        current_time = time.time()
         
-        # "current"가 포함된 code 필터링 및 결과 추출
-        result = {prop['code']: prop['value'] for prop in data['result']['properties'] if 'current' in prop['code']}
-        result['t'] = data['t']  # 최상위 t 값을 추가
+        # 2초 간격 체크
+        if current_time - last_time >= 2:
+            # Tuya에서 데이터 가져오기
+            data = openapi.get("/v2.0/cloud/thing/{}/shadow/properties".format(DEVICE_ID_ONLINE_8IN1_TESTER))
+            
+            # "current"가 포함된 code 필터링 및 결과 추출
+            result = {prop['code']: prop['value'] for prop in data['result']['properties'] if 'current' in prop['code']}
+            result['t'] = data['t']  # 최상위 t 값을 추가
 
-        # 결과 확인 (선택 사항)
-        print(result)
+            # 결과 확인 (선택 사항)
+            print(result)
 
-        # InfluxDB에 데이터 저장
-        point = Point("measurement_name") \
-            .tag("primary_key", result['t']) \
-            .field("temp_current", result.get('temp_current', 0)) \
-            .field("ph_current", result.get('ph_current', 0)) \
-            .field("tds_current", result.get('tds_current', 0)) \
-            .field("ec_current", result.get('ec_current', 0)) \
-            .field("salinity_current", result.get('salinity_current', 0)) \
-            .field("pro_current", result.get('pro_current', 0)) \
-            .field("orp_current", result.get('orp_current', 0)) \
-            .field("cf_current", result.get('cf_current', 0)) \
-            .field("rh_current", result.get('rh_current', 0)) \
-            .time(result['t'], WritePrecision.MS)
+            # InfluxDB에 데이터 저장
+            point = Point("measurement_name") \
+                .tag("primary_key", result['t']) \
+                .field("temp_current", result.get('temp_current', 0)) \
+                .field("ph_current", result.get('ph_current', 0)) \
+                .field("tds_current", result.get('tds_current', 0)) \
+                .field("ec_current", result.get('ec_current', 0)) \
+                .field("salinity_current", result.get('salinity_current', 0)) \
+                .field("pro_current", result.get('pro_current', 0)) \
+                .field("orp_current", result.get('orp_current', 0)) \
+                .field("cf_current", result.get('cf_current', 0)) \
+                .field("rh_current", result.get('rh_current', 0)) \
+                .time(result['t'], WritePrecision.MS)
 
-        write_api.write(bucket=bucket, org=org, record=point)
+            write_api.write(bucket=bucket, org=org, record=point)
 
-        # 2초 대기
-        time.sleep(2)
+            # 마지막 실행 시간 업데이트
+            last_time = current_time
 
 except KeyboardInterrupt:
     print("프로그램이 중지되었습니다.")
