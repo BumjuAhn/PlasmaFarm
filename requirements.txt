@@ -1,7 +1,11 @@
 requests
 mysql-connector-python
 pycryptodome
+pycryptodomex
 tuya-connector-python
 python-dotenv
 tuya-iot-py-sdk
 influxdb-client
+fastapi 
+uvicorn 
+jinja2

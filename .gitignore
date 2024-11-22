@@ -1,5 +1,2 @@
-config.json
-token.json
-db_config.json
 .env
 log_file.log

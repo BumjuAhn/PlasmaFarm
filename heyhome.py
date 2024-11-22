@@ -3,7 +3,7 @@ import logging
 import requests
 from config import BASE_URL, DEVICE_ID
 from auth import get_valid_token
-from database import initialize_db, save_to_db
+from database import initialize_db_heyhome, save_to_db_heyhome
 from utility import load_steps_from_csv, create_cycles_from_steps
 
 def cycle_control(steps, total_runtime=36000):
@@ -31,7 +31,7 @@ def cycle_control(steps, total_runtime=36000):
                     )
                     if response.status_code == 200:
                         logging.info(f"Device updated: {step['states']}")
-                        save_to_db(DEVICE_ID, step["states"], step["description"], cycle_id)
+                        save_to_db_heyhome(DEVICE_ID, step["states"], step["description"], cycle_id)
                     else:
                         logging.error(f"Failed to update device: {response.status_code}, {response.text}")
                 except Exception as e:
@@ -45,7 +45,7 @@ def main():
     """Main execution entry point."""
     STEPS_FILE = "steps.csv"
 
-    initialize_db()
+    initialize_db_heyhome()
     steps = load_steps_from_csv(STEPS_FILE)
 
     if not steps:
