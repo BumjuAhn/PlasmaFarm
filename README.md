@@ -1,6 +1,11 @@
 # PlasmaFarm_heyhome 
 
 ### 실행하기
+-  패키지 설치
+```
+pip3 install -r requirement.txt
+```
+
 - 헤이홈 실행
 ```
 python3 heyhome.py
