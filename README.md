@@ -1,14 +1,29 @@
 # PlasmaFarm_heyhome 
 
 ### 실행하기
-- 그냥 실행
+- 헤이홈 실행
 ```
-python3 start.py
+python3 heyhome.py
 ```
+- 투야 실행
+```
+python3 tuya.py
+```
+
 - 백그라운드 실행
 ```
 nohup python3 -u heyhome.py &
+nohup python3 -u tuya.py &
 ```
+- FASTAPI 실행
+```
+unicorn main:app --reload
+```
+- Web 주소
+```
+http://ip주소:8000
+```
+
 - 로그 보기
 ```
 cat log_file.log
